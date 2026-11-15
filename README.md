@@ -117,4 +117,4 @@ syscall trace --summary < trace.log
 
 History shows when a number shows up in the scanned syscall tables. Calls with a `kconfig` field can return `ENOSYS` when that option is off. See [NOTICE.md](NOTICE.md) for sources.
 
-`make build` pulls the latest dataset, checks it against the API manifest and embeds it. Release builds do the same. Plain `go build` and `go install` use the snapshot in `dataset/`, so commit it before tagging if you want both to match. `syscall version` shows which snapshot a binary has.
+`make build` pulls the latest dataset, checks it against the API manifest and embeds it and release builds do the same.
