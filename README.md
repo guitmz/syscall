@@ -1,5 +1,9 @@
 # syscall
 
+[![Release](https://img.shields.io/github/v/release/guitmz/syscall)](https://github.com/guitmz/syscall/releases)
+[![CI](https://github.com/guitmz/syscall/actions/workflows/ci.yml/badge.svg)](https://github.com/guitmz/syscall/actions/workflows/ci.yml)
+[![Buy me a coffee](https://img.shields.io/badge/buy%20me%20a%20coffee-guitmz-FFDD00?logo=buymeacoffee&logoColor=black)](https://buymeacoffee.com/guitmz)
+
 Explore Linux system calls from your terminal. Look up numbers and signatures, compare architectures, browse kernel history or search everything in an interactive explorer.
 
 Data comes from [api.syscall.sh](https://api.syscall.sh) and ships inside the binary, so it all works offline. New dataset, new release. You can also browse at [syscall.sh](https://syscall.sh).
