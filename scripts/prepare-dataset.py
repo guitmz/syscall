@@ -70,6 +70,9 @@ def validate(raw):
                 )
                 if not ok:
                     raise ValueError(f"bad {field} in {group}")
+            nargs = row.get("nargs")
+            if nargs is not None and (type(nargs) is not int or not 0 <= nargs <= 6):
+                raise ValueError(f"bad nargs in {group}")
             for field in ("version", "since", "removed_in"):
                 value = row.get(field)
                 if value is not None and not (
