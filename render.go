@@ -138,7 +138,7 @@ func (d display) syscalls(out io.Writer, ss []syscall) error {
 	}
 	rows := [][]string{}
 	for _, s := range ss {
-		rows = append(rows, pick(s.Arch, strconv.Itoa(s.Nr), s.Name, s.Since, orDash(deref(s.Family)), deref(s.Description)))
+		rows = append(rows, pick(s.Arch, strconv.Itoa(s.Nr), s.Name, s.Since, dash(s.Family), deref(s.Description)))
 	}
 	return d.table(out, pick("ARCH", "NR", "NAME", "SINCE", "FAMILY", "DESCRIPTION"), rows)
 }
@@ -229,6 +229,9 @@ func orDash(s string) string {
 	}
 	return s
 }
+
+// dash renders an optional field, or a dash when it is missing.
+func dash(s *string) string { return orDash(deref(s)) }
 
 // details prints one syscall as labeled, wrapped fields.
 func (d display) details(out io.Writer, s syscall) error {
@@ -388,7 +391,7 @@ func (d display) card(out io.Writer, rows []syscall, hidden int) error {
 			}
 			row = append(row, orDash(c.Return))
 			if removed {
-				row = append(row, orDash(deref(s.Removed)))
+				row = append(row, dash(s.Removed))
 			}
 			table = append(table, row)
 		}

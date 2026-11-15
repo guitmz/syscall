@@ -57,6 +57,9 @@ func termScore(s syscall, term string) int {
 			if value == "true" {
 				return hit(slices.ContainsFunc(s.args(), hasFDWord))
 			}
+			return -1
+		default:
+			return -1
 		}
 	}
 	if strings.HasPrefix(term, "0x") {
@@ -141,6 +144,8 @@ func checkTerms(query string) error {
 			if value != "true" {
 				return errors.New("fd only takes fd:true")
 			}
+		default:
+			return fmt.Errorf("unknown filter %q, want name, desc, family, arg, nargs or fd", term)
 		}
 	}
 	return nil

@@ -32,9 +32,11 @@ func completeNames(_ *cobra.Command, args []string, prefix string) ([]string, co
 	if err != nil || len(args) > 0 {
 		return nil, cobra.ShellCompDirectiveNoFileComp
 	}
+	seen := map[string]bool{}
 	var names []string
 	for _, s := range d.syscalls {
-		if strings.HasPrefix(s.Name, prefix) && !slices.Contains(names, s.Name) {
+		if strings.HasPrefix(s.Name, prefix) && !seen[s.Name] {
+			seen[s.Name] = true
 			names = append(names, s.Name)
 		}
 	}

@@ -85,7 +85,11 @@ func (m explorer) updateKey(v tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 	case m.searching:
 		return m.updateSearchKey(key, v.Text)
 	}
+	return m.dispatchKey(key)
+}
 
+// dispatchKey runs a key in the default mode, after any modal closed.
+func (m explorer) dispatchKey(key string) (tea.Model, tea.Cmd) {
 	switch key {
 	case "q":
 		return m, tea.Quit
@@ -101,17 +105,17 @@ func (m explorer) updateKey(v tea.KeyPressMsg) (tea.Model, tea.Cmd) {
 		m.showDetails = false
 		m.searching = true
 		m.inputCursor = len([]rune(m.input))
-	case "A", "shift+a":
+	case "A":
 		m.startField("architecture", m.arch, "Type an architecture, or leave it empty for all")
-	case "K", "shift+k":
+	case "K":
 		m.startField("kernel", m.kernel, "Type a kernel release, empty for latest or all for history")
-	case "D", "shift+d":
+	case "D":
 		m.startField("diff", m.diffFrom+" "+m.diffTo, "Type two kernel releases")
 	case "[":
 		m.showAction(m.shiftKernel(-1), "Kernel changed")
 	case "]":
 		m.showAction(m.shiftKernel(1), "Kernel changed")
-	case "C", "shift+c":
+	case "C":
 		m.showAction(copyText(m.shareCommand()), "Copied explorer command")
 	case "1", "2", "3", "4", "5", "6", "7", "8", "9":
 		if m.viewMode == "related" || (m.viewMode == "" && m.width >= 140 && !m.hideSummary) {
@@ -170,13 +174,13 @@ func (m explorer) updateSelectionKey(key string, s syscall) (tea.Model, tea.Cmd)
 		m.toggleDetailView("asm")
 	case "g":
 		m.showAction(m.setFilters(s.Arch, s.Since), "Jumped to first scanned release")
-	case "G", "shift+g":
+	case "G":
 		if s.Removed == nil {
 			m.status = "No removal recorded"
 		} else {
 			m.showAction(m.setFilters(s.Arch, *s.Removed), "Jumped to removal release, the syscall is gone here")
 		}
-	case "Y", "shift+y":
+	case "Y":
 		text, err := assemblySnippet(s)
 		if err == nil {
 			err = copyText(text)
@@ -194,7 +198,7 @@ func (m explorer) updateSelectionKey(key string, s syscall) (tea.Model, tea.Cmd)
 		} else {
 			m.showAction(openReference(*s.Man), "Opened man page")
 		}
-	case "M", "shift+m":
+	case "M":
 		key := favoriteKey(s)
 		if m.viewMode == "man" && m.manKey == key {
 			m.viewMode, m.detailOffset = "", 0

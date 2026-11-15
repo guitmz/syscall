@@ -50,14 +50,9 @@ syscall explore
 syscall 60
 syscall read --arch x64
 syscall 0x3c --arch x64 --output json
-syscall --arch tilepro -- -1
-syscall list --arch arm64 --kernel 6.1
-syscall search "file descriptor"
 syscall search "family:epoll fd:true"
 syscall diff 6.1 6.6
 syscall history read
-syscall arches
-syscall conventions arm64
 ```
 
 Commands that work on one arch (`list`, `search`, `history`, `snippet`, `trace`) default to your machine's arch on Linux and x64 elsewhere. By default you get the latest scanned kernel for the arch, or the latest overall when no arch is given. Use `--kernel all` to include removed calls and `syscall arches` to see what was scanned for each arch. Add `--output json` for JSON or pipe tables into `less` or `fzf`. Colors follow `--color auto|always|never` and `NO_COLOR`.

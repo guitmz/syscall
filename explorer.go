@@ -174,6 +174,9 @@ func (m explorer) Update(msg tea.Msg) (tea.Model, tea.Cmd) {
 	return m, nil
 }
 
+// explorerViews are the initial views the explore command accepts.
+var explorerViews = []string{"details", "compare", "timeline", "related", "diff", "asm"}
+
 // explorerStart holds the explore flags.
 type explorerStart struct {
 	arch, kernel, query, selected, view, theme string
@@ -190,7 +193,7 @@ func runExplorer(out io.Writer, start explorerStart) error {
 	if diffSet && start.view != "diff" {
 		return errors.New("--diff-from, --diff-to, and --diff-arch need the diff view")
 	}
-	if !slices.Contains([]string{"details", "compare", "timeline", "related", "diff", "asm"}, start.view) {
+	if !slices.Contains(explorerViews, start.view) {
 		return fmt.Errorf("view must be details, compare, timeline, related, diff, or asm")
 	}
 	if err := applyTheme(start.theme); err != nil {

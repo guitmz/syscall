@@ -574,17 +574,23 @@ func architectures() ([]architecture, error) {
 	if err != nil {
 		return nil, err
 	}
+	last := map[string]kernelVersion{}
+	for arch, versions := range d.kernels {
+		last[arch] = versions[len(versions)-1]
+	}
+	counts := map[string]int{}
+	for _, s := range d.syscalls {
+		if v, ok := last[s.Arch]; ok && s.in(v) {
+			counts[s.Arch]++
+		}
+	}
 	rows := []architecture{}
 	for _, arch := range slices.Sorted(maps.Keys(d.kernels)) {
 		versions := d.kernels[arch]
-		last := versions[len(versions)-1]
-		a := architecture{Arch: arch, First: versions[0].String(), Last: last.String(), Until: d.conventions[arch].Until}
-		for _, s := range d.syscalls {
-			if s.Arch == arch && s.in(last) {
-				a.Syscalls++
-			}
-		}
-		rows = append(rows, a)
+		rows = append(rows, architecture{
+			Arch: arch, First: versions[0].String(), Last: versions[len(versions)-1].String(),
+			Until: d.conventions[arch].Until, Syscalls: counts[arch],
+		})
 	}
 	return rows, nil
 }

@@ -6,38 +6,13 @@ import (
 	tea "charm.land/bubbletea/v2"
 )
 
-type paletteCommand struct{ label, key string }
-
-var paletteCommands = []paletteCommand{
-	{"Search syscalls", "/"},
-	{"Filter architecture", "A"},
-	{"Filter kernel", "K"},
-	{"Compare architectures", "c"},
-	{"Show kernel timeline", "t"},
-	{"Compare kernel releases", "D"},
-	{"Show related syscalls", "r"},
-	{"Show assembly snippet", "a"},
-	{"Copy assembly snippet", "Y"},
-	{"Jump to introduction", "g"},
-	{"Jump to removal", "G"},
-	{"Toggle favorite", "*"},
-	{"Show favorites", "f"},
-	{"Copy signature", "y"},
-	{"Copy explorer command", "C"},
-	{"Open man page", "m"},
-	{"Read local man page", "M"},
-	{"Toggle summary panel", "i"},
-	{"Open source", "s"},
-	{"Show keyboard help", "?"},
-	{"Quit", "q"},
-}
-
-func (m explorer) paletteMatches() []paletteCommand {
-	var out []paletteCommand
+// paletteMatches lists the palette entries whose label contains the query.
+func (m explorer) paletteMatches() []keyBinding {
+	var out []keyBinding
 	q := strings.ToLower(strings.TrimSpace(m.paletteQuery))
-	for _, c := range paletteCommands {
-		if strings.Contains(strings.ToLower(c.label), q) {
-			out = append(out, c)
+	for _, b := range keyBindings {
+		if b.key != "" && strings.Contains(strings.ToLower(b.label), q) {
+			out = append(out, b)
 		}
 	}
 	return out
@@ -62,9 +37,9 @@ func (m explorer) paletteUpdate(key, text string) (tea.Model, tea.Cmd) {
 		m.paletteIndex = min(max(0, len(m.paletteMatches())-1), m.paletteIndex+1)
 	case "enter":
 		if matches := m.paletteMatches(); len(matches) > 0 {
-			key := matches[min(m.paletteIndex, len(matches)-1)].key
+			b := matches[min(m.paletteIndex, len(matches)-1)]
 			m.palette = false
-			return m.Update(tea.KeyPressMsg{Code: []rune(key)[0], Text: key})
+			return m.dispatchKey(b.key)
 		}
 	case "backspace":
 		if r := []rune(m.paletteQuery); len(r) > 0 {
