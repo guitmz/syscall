@@ -55,11 +55,7 @@ func (m explorer) summaryLines(width int) []string {
 
 // archNumbers indexes syscall numbers by name then architecture under a
 // kernel filter, so the wide summary panel doesn't rescan the dataset.
-func archNumbers(kernel string) map[string]map[string]int {
-	d, err := loadDataset()
-	if err != nil {
-		return nil
-	}
+func (d *dataset) archNumbers(kernel string) map[string]map[string]int {
 	keep, err := d.filter("", kernel)
 	if err != nil {
 		return nil

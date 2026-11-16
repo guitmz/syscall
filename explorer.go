@@ -48,7 +48,7 @@ func newExplorer(arch, kernel string) (explorer, error) {
 	if err != nil {
 		return explorer{}, err
 	}
-	m := explorer{width: 100, height: 30, arch: arch, kernel: kernel, all: d.collect(keep), archNumbers: archNumbers(kernel)}
+	m := explorer{width: 100, height: 30, arch: arch, kernel: kernel, all: d.collect(keep), archNumbers: d.archNumbers(kernel)}
 	m.filter()
 	return m, nil
 }
