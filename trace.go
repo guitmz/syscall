@@ -250,9 +250,11 @@ func annotateTrace(in io.Reader, out io.Writer, arch, kernel, output string, o t
 		if err != nil {
 			return err
 		}
+		if long {
+			return fmt.Errorf("trace line exceeds %d bytes", maxTraceLine)
+		}
 		t := traceLine{Input: line, Matches: []syscall{}}
-		// over long lines pass through cut short and unannotated
-		if !long && !traceNoise(line) {
+		if !traceNoise(line) {
 			if o.Format != "numbers" {
 				if name, args, errno := traceCall(line, o.Format); name != "" {
 					t.Name, t.Error = name, errno

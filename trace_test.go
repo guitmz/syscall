@@ -147,12 +147,8 @@ func TestTraceNoiseAndControlChars(t *testing.T) {
 func TestTraceLongLinesAndStreaming(t *testing.T) {
 	input := "0\n" + strings.Repeat("x", maxTraceLine+10) + "\n1\n"
 	var out bytes.Buffer
-	if err := annotateTrace(strings.NewReader(input), &out, "x64", "", "json", traceOptions{}); err != nil {
-		t.Fatal(err)
-	}
-	var lines []traceLine
-	if err := json.Unmarshal(out.Bytes(), &lines); err != nil || len(lines) != 3 || len(lines[1].Input) != maxTraceLine || lines[2].Number == nil {
-		t.Fatalf("%v %d", err, len(lines))
+	if err := annotateTrace(strings.NewReader(input), &out, "x64", "", "json", traceOptions{}); err == nil || !strings.Contains(err.Error(), "exceeds") {
+		t.Fatalf("expected oversized line error, got %v", err)
 	}
 	for _, summary := range []bool{false, true} {
 		out.Reset()

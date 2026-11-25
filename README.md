@@ -71,8 +71,8 @@ strace -f -o trace.log ./program
 syscall trace --summary < trace.log
 ```
 
-`trace` reads bare numbers or full `strace` and `perf trace` lines and passes anything else through untouched. Use `--only openat` to filter, `--errors` to keep failed calls and `--summary` for counts.
+`trace` reads bare numbers or full `strace` and `perf trace` lines and passes anything else through. It stops with an error for lines over 1 MiB. Use `--only openat` to filter, `--errors` to keep failed calls and `--summary` for counts.
 
 ## Dataset
 
-History shows when a number shows up in the scanned syscall tables, and calls with a `kconfig` field can return `ENOSYS` when that option is off. See [NOTICE.md](NOTICE.md) for sources. `make build` pulls the latest dataset, checks it against the API manifest and embeds it in the binary, and release builds do the same.
+History shows when a number shows up in the scanned syscall tables, and calls with a `kconfig` field can return `ENOSYS` when that option is off. See [NOTICE.md](NOTICE.md) for sources. `make build` pulls the latest dataset and checks it against the API manifest. Release builds use the committed snapshot, so update and commit it before tagging a release.

@@ -508,6 +508,11 @@ func diffArches(fromRelease, toRelease, arches string) (kernelDiff, error) {
 	if err != nil || want == nil {
 		return diff, err
 	}
+	for _, arch := range want {
+		if !slices.ContainsFunc(diff.Arches, func(a archDiff) bool { return a.Arch == arch }) {
+			return kernelDiff{}, fmt.Errorf("%s was not scanned in both releases", arch)
+		}
+	}
 	if len(want) == 0 {
 		want = commonArches
 	}
