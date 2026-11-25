@@ -116,3 +116,22 @@ func TestFavorites(t *testing.T) {
 		t.Fatalf("invalid favorites: %v", err)
 	}
 }
+
+func TestFavoritesConcurrentUpdates(t *testing.T) {
+	dir := t.TempDir()
+	t.Setenv("HOME", dir)
+	t.Setenv("XDG_CONFIG_HOME", dir)
+	errs := make(chan error, 2)
+	for _, key := range []string{"read", "write"} {
+		go func() { _, err := toggleFavorite(key); errs <- err }()
+	}
+	for range 2 {
+		if err := <-errs; err != nil {
+			t.Fatal(err)
+		}
+	}
+	got, err := readFavorites()
+	if err != nil || !got["read"] || !got["write"] {
+		t.Fatalf("favorites: %v, error: %v", got, err)
+	}
+}

@@ -127,6 +127,15 @@ func TestCleanTextAndNargsClamp(t *testing.T) {
 	}
 }
 
+func TestDiffRejectsMissingExplicitArchitecture(t *testing.T) {
+	if _, err := diffArches("6.1", "6.6", "x64,bogus"); err == nil {
+		t.Fatal("expected an error for the unknown architecture")
+	}
+	if _, err := diffArches("6.1", "7.3", "x64,ia64"); err == nil {
+		t.Fatal("expected an error for missing architecture coverage")
+	}
+}
+
 func TestArchList(t *testing.T) {
 	for spec, want := range map[string][]string{"": {}, ",": {}, "x64,": {"x64"}, " AMD64 ,arm64,x64": {"x64", "arm64"}, "all": nil} {
 		got, err := archList(spec)

@@ -48,6 +48,34 @@ func readFavorites() (map[string]bool, error) {
 	return m, nil
 }
 
+func toggleFavorite(key string) (map[string]bool, error) {
+	p, err := favoritesPath()
+	if err != nil {
+		return nil, err
+	}
+	if err := os.MkdirAll(filepath.Dir(p), 0700); err != nil {
+		return nil, err
+	}
+	unlock, err := lockFavorites(p + ".lock")
+	if err != nil {
+		return nil, err
+	}
+	defer unlock()
+	m, err := readFavorites()
+	if err != nil {
+		return nil, err
+	}
+	if m[key] {
+		delete(m, key)
+	} else {
+		m[key] = true
+	}
+	if err := saveFavorites(m); err != nil {
+		return nil, err
+	}
+	return m, nil
+}
+
 func saveFavorites(m map[string]bool) error {
 	p, err := favoritesPath()
 	if err != nil {

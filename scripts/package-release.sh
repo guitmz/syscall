@@ -16,7 +16,6 @@ out=$(cd "$2" && pwd)
 tmp=$(mktemp -d)
 trap 'rm -rf "$tmp"' EXIT
 
-python3 scripts/prepare-dataset.py
 go test ./...
 for target in linux/amd64 linux/arm64 darwin/amd64 darwin/arm64; do
     os=${target%/*} arch=${target#*/}

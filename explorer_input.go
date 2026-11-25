@@ -1,7 +1,6 @@
 package main
 
 import (
-	"maps"
 	"strings"
 
 	tea "charm.land/bubbletea/v2"
@@ -210,16 +209,8 @@ func (m explorer) updateSelectionKey(key string, s syscall) (tea.Model, tea.Cmd)
 	case "s":
 		m.showAction(openReference(s.Source), "Opened kernel source")
 	case "*":
-		next := maps.Clone(m.favorites)
-		if next == nil {
-			next = map[string]bool{}
-		}
-		if k := favoriteKey(s); next[k] {
-			delete(next, k)
-		} else {
-			next[k] = true
-		}
-		if err := saveFavorites(next); err != nil {
+		next, err := toggleFavorite(favoriteKey(s))
+		if err != nil {
 			m.status = err.Error()
 			break
 		}
